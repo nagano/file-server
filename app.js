@@ -1,11 +1,10 @@
-// Load libraries
+// Load required modules
 const express = require('express');
+const app = express();
+
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-
-// Initialize express app
-const app = express();
 
 // Set API port
 const PORT = 8080;
@@ -13,6 +12,8 @@ const PORT = 8080;
 // Set body-parser as middleware to express app
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+// Connect all our routes to our application
+app.use('/', routes);
 
 // Add header
 app.use(function addAccessHeaders(request, response, next){
