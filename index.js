@@ -48,12 +48,18 @@ app.post('/files', function listFiles(request, response){
         name: file
         ,extension: extension
         ,size: detailedFile.size
-        ,createdAt: detailedFile.birthtimeMs
-        ,lastModified: detailedFile.mtimeMs
+        ,createdAt: convertDate(detailedFile.birthtimeMs)
+        ,lastModified: convertDate(detailedFile.mtimeMs)
       })
     }
 
     return detailedFiles;
+  };
+
+  function convertDate(date){
+    let d = new Date(date);
+    let fileDate = d.toISOString();
+    return fileDate.substring(0, 10) + ' ' + fileDate.substring(11, 19);
   };
 
   // get directory to list files
