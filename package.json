@@ -1,0 +1,12 @@
+{
+  "name": "file-storage-data-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mhnagano/file-storage-data-server.git",
+  "author": "mhnagano <michel.nagano@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}
