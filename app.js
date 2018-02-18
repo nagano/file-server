@@ -25,7 +25,7 @@ app.use(function addAccessHeaders(request, response, next){
   next();
 });
 
-// Load fileController routes
+// Load routes
 fileController(app);
 
 // Setup port where API will run
