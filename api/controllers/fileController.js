@@ -1,17 +1,28 @@
 // Load required modules
 const fs = require('fs');
-const formidable = require('formidable');
+const multer = require('multer');
 
 // Load models
 const file = require('../models/file');
 
+// Multer settings
+  // sets the storage directory the file name
+let storage;
+  // sets the function that will save the files
+let upload;
+  // root directory for saving files
+let directory = 'files/';
+
+// Export module
 module.exports = function(app){
 
-  // List files of a specific folder
+  /**
+   * List the files in a directory
+   */
   app.post('/api/files', function listFiles(request, response){
-    const directory = request.body.directory;
+
     // read directory contents
-    fs.readdir(directory, function readDirectoryContents(error, files){
+    fs.readdir(directory + request.body.directory, function readDirectoryContents(error, files){
       if(error){
         response
           .status(401)
@@ -34,49 +45,35 @@ module.exports = function(app){
     });
   });
 
-  // write files to files/ folder
+  /**
+   * Sets the configurations for multer package
+   */
+  app.post('/api/uploadDirectory', function updateDirectory(request, response){
+
+    storage = multer.diskStorage({
+      destination: directory + request.body.directory
+      ,filename: function(request, file, callback){
+        callback(null, file.originalname);
+      }
+    });
+
+    upload = multer({ storage: storage }).single('file');
+
+    response
+      .status(200)
+      .json({message: '', origin: 'data-server', success: true})
+  });
+
+  /**
+   * Save files to files/ directory
+   */
   app.post('/api/upload', function uploadFiles(request, response){
+    upload(request, response, function(error){
+      if(error){
+        response.status(500).json({message: 'error uploading file', origin: 'data-server', success: true});
+      }
 
-    // create an incoming form object
-    let form = formidable.IncomingForm();
-
-    // specify that we want to allow the user to upload multiple files at once
-    form.multiples = true;
-
-    // upload files to specified directory
-    const directory = request.body.directory;
-    form.uploadDir = directory;
-
-    // every time a file has been uploaded successfully,
-    // rename it to its' orignal name
-    form.on('file', function(field, file) {
-      fs.rename(file.path, directory + '/' + file.name);
-    });
-
-    form.on('error', function(error){
-      response
-        .status(500)
-        .json({
-          content: error
-          ,message: 'error uploading file(s)'
-          ,origin: 'data-serve'
-          ,success: true
-        })
-    });
-
-    form.on('end', function(){
-      response
-        .status(200)
-        .json({
-          content: ''
-          ,message: 'file(s) uploaded successfully'
-          ,origin: 'data-serve'
-          ,success: true
-        })
-    });
-
-    // parse the incoming request containing the form data
-    form.parse(request);
-
+      response.status(200).json({message: 'file uploaded successfully', origin: 'data-server', success: true});
+    })
   });
 };

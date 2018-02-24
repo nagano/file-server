@@ -11,7 +11,7 @@ module.exports = {
       detailedFiles.push({
         name: file
         ,extension: extension
-        ,size: detailedFile.size
+        ,size: this.convertSize(detailedFile.size)
         ,createdAt: this.convertDate(detailedFile.birthtimeMs)
         ,lastModified: this.convertDate(detailedFile.mtimeMs)
       })
@@ -25,4 +25,15 @@ module.exports = {
     let fileDate = d.toISOString();
     return fileDate.substring(0, 10) + ' ' + fileDate.substring(11, 19);
   }
+
+  // convert size in bytes
+  ,convertSize: function(objSize){
+        if(objSize.toString().length > 6){
+            return (objSize/(1024*1024)).toFixed(2) + ' MB';
+        } else if(objSize < 10) {
+            return '< 0.01 kb';
+        } else {
+            return (objSize/1024).toFixed(2) + ' kb';
+        }
+    }
 };
