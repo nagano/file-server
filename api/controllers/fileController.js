@@ -36,7 +36,7 @@ module.exports = function(app){
         response
           .status(200)
           .json({
-            content: file.getFilesInfo(directory, files)
+            content: file.getFilesInfo(directory + request.body.directory, files)
             ,message: ''
             ,origin: 'data-server'
             ,success: true
