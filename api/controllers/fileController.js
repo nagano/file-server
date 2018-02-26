@@ -76,4 +76,9 @@ module.exports = function(app){
       response.status(200).json({message: 'file uploaded successfully', origin: 'data-server', success: true});
     })
   });
+
+  app.post('/api/download', function downloadFile(request, response){
+    response.download(directory + request.body.directory);
+  });
+
 };
