@@ -10,8 +10,6 @@ const file = require('../models/file');
 let storage;
   // sets the function that will save the files
 let upload;
-  // root directory for saving files
-let directory = 'files/';
 
 // Export module
 module.exports = function(app){
@@ -22,7 +20,7 @@ module.exports = function(app){
   app.post('/api/files', function listFiles(request, response){
 
     // read directory contents
-    fs.readdir(directory + request.body.directory, function readDirectoryContents(error, files){
+    fs.readdir(request.body.directory, function readDirectoryContents(error, files){
       if(error){
         response
           .status(401)
@@ -36,7 +34,7 @@ module.exports = function(app){
         response
           .status(200)
           .json({
-            content: file.getFilesInfo(directory + request.body.directory, files)
+            content: file.getFilesInfo(request.body.directory, files)
             ,message: ''
             ,origin: 'data-server'
             ,success: true
@@ -51,7 +49,7 @@ module.exports = function(app){
   app.post('/api/uploadDirectory', function updateDirectory(request, response){
 
     storage = multer.diskStorage({
-      destination: directory + request.body.directory
+      destination: request.body.directory
       ,filename: function(request, file, callback){
         callback(null, file.originalname);
       }
@@ -77,8 +75,10 @@ module.exports = function(app){
     })
   });
 
-  app.post('/api/download', function downloadFile(request, response){
-    response.download(directory + request.body.directory);
+  // app.post('/api/download', function downloadFile(request, response){
+  app.get('/api/download', function downloadFile(request, response){
+    // response.download(request.body.path);
+    response.download(request.query.path);
   });
 
 };
