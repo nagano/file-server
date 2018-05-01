@@ -1,4 +1,4 @@
-# file-storage-data-server
+# file-server
 
 ## Installation
 
