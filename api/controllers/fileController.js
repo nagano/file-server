@@ -6,17 +6,13 @@ const multer = require('multer');
 const file = require('../models/file');
 
 // Multer settings
-  // sets the storage directory the file name
+  // sets the storage directory
 let storage;
   // sets the function that will save the files
 let upload;
 
 // Export module
 module.exports = function(app){
-
-  app.get('/test', function(request, response){
-    response.send('Test');
-  });
 
   /**
    * List the files in a directory
